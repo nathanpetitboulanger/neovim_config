@@ -51,3 +51,15 @@ vim.keymap.set("n", "<leader>zi", open_ipython_project, { desc = "Ouvrir IPython
 
 -- Permet de sortir du mode terminal avec la touche Escape
 vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+
+-- AI --
+vim.keymap.set("n", "<leader>af", function()
+  local input = vim.fn.input("Instruction Gemini : ")
+  if input ~= "" then
+    vim.cmd("vsplit | term gemini '" .. input .. " dans %'")
+  end
+end, { desc = "Gemini Interactive" })
+
+vim.keymap.set("n", "<leader>as", ":vsplit | term gemini<CR>", { desc = "Open gemini on vsplit" })
+vim.keymap.set("t", "<A-q>", [[<C-\><C-n>]], { desc = "Sortir du mode terminal" })
+vim.keymap.set("n", "<leader>j", "<cmd>lua toggle_gemini()<CR>", { noremap = true, silent = true })
