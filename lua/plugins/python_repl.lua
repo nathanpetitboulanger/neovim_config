@@ -9,6 +9,7 @@ return {
       vim.keymap.set("x", "<leader>ps", "<Plug>SlimeRegionSend", { desc = "Envoyer la sélection au REPL" })
       vim.keymap.set("n", "<leader>ps", "<Plug>SlimeParagraphSend", { desc = "Envoyer le paragraphe au REPL" })
       vim.keymap.set("n", "<leader>pa", ":%SlimeSend<CR>", { desc = "Envoyer tout le fichier au REPL" })
+      vim.keymap.set("n", "<leader>pw", "<Plug>SlimeMotionSendiw", { remap = true, desc = "Envoyer le mot au REPL" })
     end,
   },
 }
