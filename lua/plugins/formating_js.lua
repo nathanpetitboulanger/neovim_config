@@ -4,8 +4,9 @@ return {
     formatters_by_ft = {
       javascript = { "prettier" },
       typescript = { "prettier" },
-      javascriptreact = { "prettier" }, -- Ajoute cette ligne pour les .jsx
-      typescriptreact = { "prettier" }, -- Ajoute cette ligne pour les .tsx
+      javascriptreact = { "prettier" },
+      typescriptreact = { "prettier" },
+      html = { "prettier" },
     },
     format_on_save = {
       timeout_ms = 500,

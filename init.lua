@@ -31,3 +31,29 @@ function _G.toggle_gemini()
 end
 
 vim.keymap.set("n", "<leader>a", "<cmd>lua toggle_gemini()<CR>", { noremap = true, silent = true })
+
+-- Term for claude
+--
+local Terminal = require("toggleterm.terminal").Terminal
+
+-- On définit une "recette" pour notre terminal Claude
+local claude_terminal = Terminal:new({
+  cmd = "claude --dangerously-skip-permissions", -- La commande exacte qui se lance
+  direction = "float", -- On veut qu'il flotte par-dessus le code
+  hidden = true, -- Ne se lance pas tout seul au démarrage
+  close_on_exit = true, -- Ferme la fenêtre si tu quittes CLaude
+  float_opts = {
+    border = "curved", -- Pour le style
+  },
+  -- Important pour toi :
+  on_open = function(term)
+    -- On force le mode insertion dès qu'on l'ouvre
+    vim.cmd("startinsert!")
+  end,
+})
+
+function _G.toggle_claude()
+  claude_terminal:toggle()
+end
+
+vim.keymap.set("n", "<leader>a", "<cmd>lua toggle_claude()<CR>", { noremap = true, silent = true })

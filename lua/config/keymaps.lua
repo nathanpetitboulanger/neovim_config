@@ -7,6 +7,10 @@
 -- -- Raccourcis pour la Data Science (Molten)
 local map = vim.keymap.set
 
+-- Faire monter/descendre la vue sans déplacer le curseur
+map("n", "<A-j>", "1<C-e>", { desc = "Descendre la vue" })
+map("n", "<A-k>", "1<C-y>", { desc = "Monter la vue" })
+
 -- Initialiser le kernel Jupyter (à faire une fois par fichier)
 map("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten (Jupyter)" })
 
@@ -36,30 +40,53 @@ vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], { desc = "Fenêtre haut" })
 vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], { desc = "Fenêtre droite" })
 
 local function open_ipython_project()
-  local root = LazyVim.root()
+  -- Dossier du fichier actuel, avec fallback sur la racine du projet
+  local dir = vim.fn.expand("%:p:h")
+  if dir == "" or dir == "." then
+    dir = LazyVim.root()
+  end
 
   -- On utilise une commande unique qui :
   -- 1. split verticalement (vsplit)
   -- 2. change le dossier de travail (lcd) pour cette fenêtre uniquement
   -- 3. lance le terminal
-  vim.cmd("vsplit | lcd " .. root .. " | terminal uv run ipython --no-autoindent")
+  vim.cmd("vsplit | lcd " .. dir .. " | terminal uv run ipython --no-autoindent")
   -- On passe en mode insertion
 end
 
 -- On associe cette fonction à un raccourci clavier (ex: <leader>zi pour "Z-IPython")
 vim.keymap.set("n", "<leader>zi", open_ipython_project, { desc = "Ouvrir IPython avec uv (Projet)" })
 
+local function open_node_project()
+  local root = LazyVim.root()
+  vim.cmd("vsplit | lcd " .. root .. " | terminal node " .. vim.fn.stdpath("config") .. "/scripts/node-repl.js")
+end
+
+vim.keymap.set("n", "<leader>zj", open_node_project, { desc = "Ouvrir Node REPL (Projet)" })
+
 -- Permet de sortir du mode terminal avec la touche Escape
 vim.keymap.set("t", "<esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 
--- AI --
-vim.keymap.set("n", "<leader>af", function()
-  local input = vim.fn.input("Instruction Gemini : ")
-  if input ~= "" then
-    vim.cmd("vsplit | term gemini '" .. input .. " dans %'")
-  end
-end, { desc = "Gemini Interactive" })
+-- -- GEMINI --
+-- vim.keymap.set("n", "<leader>af", function()
+--   local input = vim.fn.input("Instruction Gemini : ")
+--   if input ~= "" then
+--     vim.cmd("vsplit | term gemini '" .. input .. " dans %'")
+--   end
+-- end, { desc = "Gemini Interactive" })
+--
+-- vim.keymap.set("n", "<leader>as", ":vsplit | term gemini<CR>", { desc = "Open gemini on vsplit" })
+-- vim.keymap.set("t", "<A-q>", [[<C-\><C-n>]], { desc = "Sortir du mode terminal" })
+-- vim.keymap.set("n", "<leader>j", "<cmd>lua toggle_gemini()<CR>", { noremap = true, silent = true })
 
-vim.keymap.set("n", "<leader>as", ":vsplit | term gemini<CR>", { desc = "Open gemini on vsplit" })
+-- CLAUDE --
+vim.keymap.set("n", "<leader>af", function()
+  local input = vim.fn.input("Instruction Claude : ")
+  if input ~= "" then
+    vim.cmd("vsplit | term claude --dangerously-skip-permissions'" .. input .. " dans %'")
+  end
+end, { desc = "Claude Interactive" })
+
+vim.keymap.set("n", "<leader>as", ":vsplit | term claude<CR>", { desc = "Open claude on vsplit" })
 vim.keymap.set("t", "<A-q>", [[<C-\><C-n>]], { desc = "Sortir du mode terminal" })
-vim.keymap.set("n", "<leader>j", "<cmd>lua toggle_gemini()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>j", "<cmd>lua toggle_claude()<CR>", { noremap = true, silent = true })
