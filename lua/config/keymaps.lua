@@ -90,3 +90,11 @@ end, { desc = "Claude Interactive" })
 vim.keymap.set("n", "<leader>as", ":vsplit | term claude<CR>", { desc = "Open claude on vsplit" })
 vim.keymap.set("t", "<A-q>", [[<C-\><C-n>]], { desc = "Sortir du mode terminal" })
 vim.keymap.set("n", "<leader>j", "<cmd>lua toggle_claude()<CR>", { noremap = true, silent = true })
+
+-- Diff entre maintenant et le dernier commit
+vim.keymap.set("n", "<leader>ghh", function()
+  require("gitsigns").diffthis("HEAD")
+end, { desc = "Diff This HEAD" })
+
+vim.keymap.set("n", "<leader>gH", "<cmd>terminal git diff HEAD<CR>", { desc = "Git Diff HEAD (repo)" })
+
