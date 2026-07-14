@@ -87,8 +87,36 @@ local function current_word(ctx)
   return line:sub(word_start, cursor_col)
 end
 
-local function buffer_sql_text()
-  return table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+local function current_statement_text(ctx)
+  local row = ctx.cursor and ctx.cursor[1] or vim.api.nvim_win_get_cursor(0)[1]
+  local col = ctx.cursor and ctx.cursor[2] or vim.api.nvim_win_get_cursor(0)[2]
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  if #lines == 0 then
+    return ""
+  end
+
+  local before_lines = {}
+  for i = 1, row do
+    before_lines[i] = lines[i] or ""
+  end
+  before_lines[row] = (ctx.line or lines[row] or ""):sub(1, col)
+  local before = table.concat(before_lines, "\n")
+
+  local after_lines = { (ctx.line or lines[row] or ""):sub(col + 1) }
+  for i = row + 1, #lines do
+    table.insert(after_lines, lines[i])
+  end
+  local after = table.concat(after_lines, "\n")
+
+  local last_semicolon = 0
+  for i = 1, #before do
+    if before:sub(i, i) == ";" then
+      last_semicolon = i
+    end
+  end
+
+  local next_semicolon = after:find(";", 1, true) or (#after + 1)
+  return before:sub(last_semicolon + 1) .. after:sub(1, next_semicolon - 1)
 end
 
 local function text_before_cursor(ctx)
@@ -153,7 +181,7 @@ function M:get_completions(ctx, callback)
   end
 
   local prefix = current_word(ctx):lower()
-  local sql = buffer_sql_text()
+  local sql = current_statement_text(ctx)
   local tables_in_query = referenced_tables(sql, schema)
   local items = {}
   local seen = {}

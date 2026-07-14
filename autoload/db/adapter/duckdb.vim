@@ -33,7 +33,7 @@ function! db#adapter#duckdb#command(url) abort
 endfunction
 
 function! db#adapter#duckdb#interactive(url) abort
-  return db#adapter#duckdb#command(a:url) + ['-column', '-header']
+  return db#adapter#duckdb#command(a:url) + ['-box', '-header']
 endfunction
 
 function! db#adapter#duckdb#auth_input() abort
