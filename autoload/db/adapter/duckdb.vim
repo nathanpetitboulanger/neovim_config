@@ -29,7 +29,8 @@ function! db#adapter#duckdb#dbext(url) abort
 endfunction
 
 function! db#adapter#duckdb#command(url) abort
-  return ['duckdb', s:path(a:url)]
+  " Dadbod result buffers do not interpret terminal ANSI escape sequences.
+  return ['duckdb', s:path(a:url), '-cmd', '.highlight off']
 endfunction
 
 function! db#adapter#duckdb#interactive(url) abort
