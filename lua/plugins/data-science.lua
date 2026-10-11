@@ -42,4 +42,19 @@ return {
       window_overlap_clear_enabled = true,
     },
   },
+
+  -- 4. vim-slime : Envoyer du code vers un REPL ouvert dans un terminal Neovim (cf. <leader>zi)
+  {
+    "jpalardy/vim-slime",
+    init = function()
+      vim.g.slime_target = "neovim" -- Utilise le terminal intégré de Neovim
+    end,
+    config = function()
+      -- Raccourci pour envoyer la sélection ou le paragraphe
+      vim.keymap.set("x", "<leader>ps", "<Plug>SlimeRegionSend", { desc = "Envoyer la sélection au REPL" })
+      vim.keymap.set("n", "<leader>ps", "<Plug>SlimeParagraphSend", { desc = "Envoyer le paragraphe au REPL" })
+      vim.keymap.set("n", "<leader>pa", ":%SlimeSend<CR>", { desc = "Envoyer tout le fichier au REPL" })
+      vim.keymap.set("n", "<leader>pw", "<Plug>SlimeMotionSendiw", { remap = true, desc = "Envoyer le mot au REPL" })
+    end,
+  },
 }

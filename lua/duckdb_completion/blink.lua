@@ -5,7 +5,7 @@ local cache = {}
 local CompletionItemKind = vim.lsp.protocol.CompletionItemKind
 
 local function get_db_path()
-  local db = vim.b.db or vim.t.db or vim.w.db or vim.g.db or vim.env.DATABASE_URL
+  local db = vim.b.db or vim.t.db or vim.w.db or vim.g.db or vim.env.DBUI_URL or vim.env.DATABASE_URL
   if type(db) ~= "string" or db == "" then
     return nil
   end

@@ -1,5 +1,6 @@
 tt.*
 .tests
+lua/config/desktop-theme.lua
 doc/tags
 debug
 .repro

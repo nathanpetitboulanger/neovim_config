@@ -4,36 +4,10 @@ local sql_ft = { "sql", "mysql", "plsql" }
 vim.g.omni_sql_default_compl_type = "syntax"
 vim.g.loaded_sql_completion = true
 
-local function duckdb_url(path)
-  if path:match("^duckdb:") then
-    return path
-  end
-  return "duckdb:" .. path
-end
-
-local function setup_duckdb_connections()
-  local main_db = duckdb_url("/home/nathan/fltrd/data-pipeline/data/fltrd.duckdb")
-  local test_db = duckdb_url(vim.env.DUCKDB_PATH or "/home/nathan/fltrd/data-pipeline/data/test.duckdb")
-
-  -- Used by vim-dadbod-completion when editing a normal .sql buffer.
-  -- Default to data/test.duckdb because that is the exploratory DB with the
-  -- retailer_* tables. Override per launch with DUCKDB_PATH=/path/to/db.duckdb.
-  vim.g.db = vim.g.db or test_db
-
-  -- Used by :DBUI.
-  vim.g.dbs = vim.tbl_extend("force", vim.g.dbs or {}, {
-    fltrd = main_db,
-    fltrd_test = test_db,
-  })
-end
-
-setup_duckdb_connections()
-
 return {
   {
     "tpope/vim-dadbod",
     cmd = "DB",
-    init = setup_duckdb_connections,
   },
 
   {
@@ -44,8 +18,6 @@ return {
       { "<leader>D", "<cmd>DBUIToggle<CR>", desc = "Toggle DB UI" },
     },
     init = function()
-      setup_duckdb_connections()
-
       local data_path = vim.fn.stdpath("data")
       vim.g.db_ui_auto_execute_table_helpers = 1
       vim.g.db_ui_save_location = data_path .. "/dadbod_ui"
@@ -90,6 +62,21 @@ return {
         opts.sources.per_filetype[ft] = { inherit_defaults = true, "duckdb" }
       end
     end,
+  },
+
+  -- Manual formatting only: autoformat on save is disabled for SQL in autocmds.lua
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        sql = { "sqlfluff" },
+      },
+      formatters = {
+        sqlfluff = {
+          args = { "format", "--dialect", "duckdb", "-" },
+        },
+      },
+    },
   },
 
   {

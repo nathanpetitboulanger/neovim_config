@@ -1,3 +1,4 @@
+-- Formatters (SQL formatting lives in sql.lua)
 return {
   "stevearc/conform.nvim",
   opts = {
@@ -7,12 +8,6 @@ return {
       javascriptreact = { "prettier" },
       typescriptreact = { "prettier" },
       html = { "prettier" },
-      sql = { "sqlfluff" },
-    },
-    formatters = {
-      sqlfluff = {
-        args = { "format", "--dialect", "duckdb", "-" },
-      },
     },
   },
 }

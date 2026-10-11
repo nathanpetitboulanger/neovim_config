@@ -1,0 +1,1 @@
+/home/nathan/.config/themes/gruvbox/nvim.lua
